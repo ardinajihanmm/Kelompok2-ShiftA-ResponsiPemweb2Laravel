@@ -22,6 +22,6 @@ class Facility extends Model
 
     public function reports(): HasMany
     {
-        return $this->hasMany(Report::class);
+        
     }
 }
