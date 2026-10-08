@@ -19,9 +19,8 @@ class Facility extends Model
     {
         return $this->belongsTo(Category::class);
     }
-
     public function reports(): HasMany
     {
-        
+        return $this->hasMany(Report::class);
     }
 }
