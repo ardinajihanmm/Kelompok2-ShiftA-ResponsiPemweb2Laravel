@@ -6,7 +6,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CommentController;
 use Illuminate\Image\Transformations\Rotate;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\FacilityController;
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
@@ -32,4 +33,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('reports', ReportController::class);
+
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('facilities', FacilityController::class);
 });
