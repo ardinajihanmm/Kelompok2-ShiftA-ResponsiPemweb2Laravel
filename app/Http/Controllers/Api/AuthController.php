@@ -61,7 +61,7 @@ class AuthController extends Controller
                 'user' => $user,
                 'token' => $token,
             ],
-        ]);
+        ], 200);
     }
 
     public function logout(Request $request)
@@ -71,7 +71,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Logout berhasil',
-        ]);
+        ], 200);
     }
 
     public function me(Request $request)
@@ -79,6 +79,6 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'data' => $request->user(),
-        ]);
+        ], 200);
     }
 }
