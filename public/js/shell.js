@@ -1,27 +1,45 @@
-/* FasTrack shell: guard login, isi data user di sidebar/topbar, logout, sidebar mobile. */
+/* FasTrack shell: guard login & role, isi data user, menu per role, logout, sidebar mobile. */
 (function () {
   'use strict';
   const { $, $$ } = FT;
 
   if (!FT.token()) { FT.ready = new Promise(() => {}); location.replace('/login'); return; }
 
-  const adminOnlyPage = document.body.dataset.admin === '1';
+  // Role yang boleh membuka halaman ini (kosong = semua role yang sudah login).
+  const allowedRoles = (document.body.dataset.roles || '').split(',').map(s => s.trim()).filter(Boolean);
+
+  // Pesan singkat setelah redirect (mis. dialihkan karena tidak punya akses).
+  function showFlash() {
+    const msg = sessionStorage.getItem('ft_flash');
+    if (msg) { sessionStorage.removeItem('ft_flash'); FT.toast(msg, 'error'); }
+  }
 
   FT.ready = FT.api('/auth/me').then(r => {
     if (!r.ok) { FT.clearToken(); location.replace('/login'); return new Promise(() => {}); }
     const u = r.data.data || {};
     FT.user = u;
+    const role = u.role || 'mahasiswa';
 
-    if (adminOnlyPage && u.role !== 'admin') { location.replace('/dashboard'); return new Promise(() => {}); }
+    if (allowedRoles.length && !allowedRoles.includes(role)) {
+      sessionStorage.setItem('ft_flash', 'Halaman tersebut tidak tersedia untuk akun ' + role + '.');
+      location.replace('/dashboard');
+      return new Promise(() => {});
+    }
 
-    const role = (u.role || 'mahasiswa');
     $$('[data-user-name]').forEach(el => el.textContent = u.name || 'Pengguna');
     $$('[data-user-first]').forEach(el => el.textContent = (u.name || 'Pengguna').split(' ')[0]);
     $$('[data-user-email]').forEach(el => el.textContent = u.email || '');
     $$('[data-user-role]').forEach(el => el.textContent = role.charAt(0).toUpperCase() + role.slice(1));
     $$('[data-user-initial]').forEach(el => el.textContent = FT.initial(u.name));
+
+    // Menu & elemen per role
     $$('.admin-only').forEach(el => el.classList.toggle('hidden', role !== 'admin'));
+    $$('.mahasiswa-only').forEach(el => el.classList.toggle('hidden', role !== 'mahasiswa'));
+    // Teks per role: data-text-admin="..." data-text-mahasiswa="..."
+    $$(`[data-text-${role}]`).forEach(el => el.textContent = el.getAttribute(`data-text-${role}`));
+
     document.body.classList.add('is-ready');
+    showFlash();
     return u;
   });
 

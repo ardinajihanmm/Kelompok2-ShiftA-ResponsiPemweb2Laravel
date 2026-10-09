@@ -6,22 +6,39 @@
 
     <div class="side-caption">WORKSPACE</div>
     <nav class="nav">
-        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
-        <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.index', 'reports.show') ? 'active' : '' }}"><i class="bi bi-clipboard2-data-fill"></i> Semua Laporan</a>
-        <a href="{{ route('reports.create') }}" class="{{ request()->routeIs('reports.create') ? 'active' : '' }}"><i class="bi bi-plus-circle-fill"></i> Buat Laporan</a>
+        <a href="/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}">
+            <i class="bi bi-grid-1x2-fill"></i> Dashboard
+        </a>
+        <a href="/reports" onclick="window.location.assign('/reports'); return false;"
+           class="{{ request()->is('reports') || request()->is('reports/*') ? 'active' : '' }}">
+            <i class="bi bi-clipboard2-data-fill"></i>
+            <span data-text-admin="Semua Laporan" data-text-mahasiswa="Laporan Saya">Laporan</span>
+        </a>
+        <a href="/reports/create" class="mahasiswa-only hidden {{ request()->is('reports/create') ? 'active' : '' }}">
+            <i class="bi bi-plus-circle-fill"></i> Buat Laporan
+        </a>
     </nav>
 
     <div class="side-caption">MASTER DATA</div>
     <nav class="nav">
-        <a href="{{ route('facilities.index') }}" class="{{ request()->routeIs('facilities.*') ? 'active' : '' }}"><i class="bi bi-building-fill"></i> Fasilitas Kampus</a>
-        <a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.*') ? 'active' : '' }}"><i class="bi bi-tags-fill"></i> Kategori</a>
-        <a href="{{ route('users.index') }}" class="admin-only hidden {{ request()->routeIs('users.*') ? 'active' : '' }}"><i class="bi bi-people-fill"></i> Pengguna</a>
+        <a href="/facilities" class="{{ request()->is('facilities') || request()->is('facilities/*') ? 'active' : '' }}">
+            <i class="bi bi-building-fill"></i> Fasilitas Kampus
+        </a>
+        <a href="/categories" class="{{ request()->is('categories') || request()->is('categories/*') ? 'active' : '' }}">
+            <i class="bi bi-tags-fill"></i> Kategori
+        </a>
+        <a href="/users" onclick="window.location.assign('/users'); return false;"
+           class="admin-only hidden {{ request()->is('users') || request()->is('users/*') ? 'active' : '' }}">
+            <i class="bi bi-people-fill"></i> Pengguna
+        </a>
     </nav>
 
     <div class="side-bottom">
         <div class="side-caption" style="padding-top:0">AKUN</div>
         <nav class="nav">
-            <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}"><i class="bi bi-person-circle"></i> Profil Saya</a>
+            <a href="/profile" class="{{ request()->is('profile') ? 'active' : '' }}">
+                <i class="bi bi-person-circle"></i> Profil Saya
+            </a>
         </nav>
         <div class="side-user" style="margin-top:12px">
             <div class="avatar" data-user-initial>F</div>

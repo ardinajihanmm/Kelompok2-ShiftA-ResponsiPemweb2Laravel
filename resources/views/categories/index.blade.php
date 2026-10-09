@@ -14,9 +14,9 @@
     </div>
 
     <div id="formWrap" class="panel form-panel hidden" style="margin-bottom:20px;max-width:640px">
-        <div class="panel-head"><h2>Tambah kategori</h2></div>
+        <div class="panel-head"><h2 id="categoryFormTitle">Tambah kategori</h2></div>
         <div id="formMsg"></div>
-        <form id="categoryForm" novalidate>
+        <form id="categoryForm" novalidate><input type="hidden" id="categoryId">
             <div class="field"><label for="cName">Nama kategori <span class="req">*</span></label><input class="input" id="cName" placeholder="Contoh: Elektronik" required></div>
             <div class="field"><label for="cDesc">Deskripsi</label><textarea class="textarea" id="cDesc" style="min-height:90px"></textarea></div>
             <div class="form-actions">

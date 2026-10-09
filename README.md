@@ -1,129 +1,203 @@
-# FasTrack — Sistem Pelaporan dan Monitoring Kerusakan Fasilitas Kampus
+# FasTrack — Facility Care System
 
-FasTrack adalah aplikasi web untuk membantu mahasiswa melaporkan kerusakan fasilitas kampus dan membantu admin memantau serta memperbarui status tindak lanjut laporan.
+> Sistem pelaporan dan pemantauan kerusakan fasilitas kampus.
 
-## Permasalahan
-Pelaporan kerusakan fasilitas kampus sering tersebar dan sulit dipantau status penyelesaiannya. FasTrack menyediakan alur terpusat: mahasiswa membuat laporan → sistem menyimpan laporan → admin memproses laporan → status diperbarui hingga selesai.
+FasTrack adalah aplikasi web untuk membantu mahasiswa melaporkan kerusakan fasilitas kampus dan membantu admin memantau serta menindaklanjuti laporan secara terstruktur.
 
-## Fitur
-- Register, login, logout menggunakan Laravel Sanctum Bearer Token
-- Role `mahasiswa` dan `admin`
-- CRUD User (admin)
-- CRUD Category
-- CRUD Facility
-- CRUD Report dengan status dan prioritas
-- Komentar/tanggapan pada laporan
-- Search dan filter laporan
-- Pagination API
-- Form Request validation
-- API Resource
-- Dashboard frontend responsif
-- Alur bisnis monitoring status laporan
+---
 
-## Teknologi
-- Laravel 13
-- PHP
-- MySQL/MariaDB
-- Eloquent ORM
-- Laravel Sanctum
-- Blade + HTML/CSS/JavaScript
-- Git/GitHub
-- Postman
+## Informasi Kelompok
 
-## Relasi Data
-- User 1:N Report
-- User 1:N Comment
-- Category 1:N Facility
-- Facility 1:N Report
-- Report 1:N Comment
+- **Nomor Kelompok:** Kelompok 2
+- **Shift Praktikum:** Shift A
+- **Repository:** [Kelompok2-ShiftA-ResponsiPemweb2Laravel](https://github.com/ardinajihanmm/Kelompok2-ShiftA-ResponsiPemweb2Laravel)
 
-## Alur Bisnis
-1. Mahasiswa login.
-2. Mahasiswa memilih fasilitas dan membuat laporan kerusakan.
-3. Sistem menyimpan laporan dengan status `menunggu`.
-4. Admin melihat laporan dan mengubah status menjadi `diproses`, `selesai`, atau `ditolak`.
-5. Status akhir dapat dipantau oleh pengguna.
+## Anggota Kelompok
 
-## API Documentation
+| No. | Nama Lengkap | NIM | Shift Awal | Shift Akhir | Jobdesk / Kontribusi | Link Video Penjelasan |
+|---:|---|---|---|---|---|---|
+| 1 | Muhammad Zaki Dzulfikar | H1D023065 | Shift A | Shift B | CRUD fitur reservasi & autentikasi — sesuaikan dengan kontribusi pada FasTrack | [YouTube/Drive](https://...) |
+| 2 | [Nama Lengkap] | [NIM] | [Shift Awal] | [Shift Akhir] | [Jobdesk / kontribusi] | [YouTube/Drive](https://...) |
+| 3 | [Nama Lengkap] | [NIM] | [Shift Awal] | [Shift Akhir] | [Jobdesk / kontribusi] | [YouTube/Drive](https://...) |
+| 4 | [Nama Lengkap] | [NIM] | [Shift Awal] | [Shift Akhir] | [Jobdesk / kontribusi] | [YouTube/Drive](https://...) |
 
-| Method | Endpoint | Keterangan | Auth |
-|---|---|---|---|
-| POST | `/api/auth/register` | Registrasi | No |
-| POST | `/api/auth/login` | Login dan mendapatkan token | No |
-| POST | `/api/auth/logout` | Logout token aktif | Yes |
-| GET | `/api/auth/me` | Data pengguna aktif | Yes |
-| GET | `/api/users` | Daftar user | Admin |
-| POST | `/api/users` | Tambah user | Admin |
-| GET | `/api/users/{id}` | Detail user | Admin |
-| PUT/PATCH | `/api/users/{id}` | Update user | Admin |
-| DELETE | `/api/users/{id}` | Hapus user | Admin |
-| GET | `/api/categories` | Daftar kategori | Yes |
-| POST | `/api/categories` | Tambah kategori | Yes |
-| GET | `/api/categories/{id}` | Detail kategori | Yes |
-| PUT/PATCH | `/api/categories/{id}` | Update kategori | Yes |
-| DELETE | `/api/categories/{id}` | Hapus kategori | Yes |
-| GET | `/api/facilities` | Daftar fasilitas | Yes |
-| POST | `/api/facilities` | Tambah fasilitas | Yes |
-| GET | `/api/facilities/{id}` | Detail fasilitas | Yes |
-| PUT/PATCH | `/api/facilities/{id}` | Update fasilitas | Yes |
-| DELETE | `/api/facilities/{id}` | Hapus fasilitas | Yes |
-| GET | `/api/reports` | Daftar laporan + search/filter + pagination | Yes |
-| POST | `/api/reports` | Buat laporan | Yes |
-| GET | `/api/reports/{id}` | Detail laporan | Yes |
-| PUT/PATCH | `/api/reports/{id}` | Update laporan/status | Yes |
-| DELETE | `/api/reports/{id}` | Hapus laporan | Yes |
-| GET | `/api/reports/{id}/comments` | Daftar tanggapan | Yes |
-| POST | `/api/reports/{id}/comments` | Tambah tanggapan | Yes |
-| PUT/PATCH | `/api/comments/{id}` | Update tanggapan | Yes |
-| DELETE | `/api/comments/{id}` | Hapus tanggapan | Yes |
+---
 
-## Cara Menjalankan
+## Deskripsi Aplikasi
+
+FasTrack menyediakan sistem pelaporan fasilitas kampus yang menghubungkan pelapor dengan admin pengelola fasilitas. Mahasiswa dapat membuat laporan dengan memilih fasilitas, mengisi judul dan deskripsi masalah, serta melampirkan foto bukti. Admin dapat memantau laporan dan mengelola data pendukung aplikasi.
+
+Setiap laporan memiliki status awal **Menunggu**, sedangkan prioritas ditentukan oleh admin setelah laporan ditinjau.
+
+### Target Pengguna
+
+- **Mahasiswa / pengguna:** membuat laporan dan melihat laporan sesuai hak akses.
+- **Admin:** mengelola laporan serta data pendukung seperti fasilitas, kategori, dan pengguna.
+
+## Teknologi yang Digunakan
+
+- **Backend:** Laravel 13 / PHP
+- **Frontend:** Blade, CSS, JavaScript
+- **API dan autentikasi:** Laravel Sanctum
+- **Database:** MySQL
+- **Lingkungan pengembangan lokal:** Laragon
+- **Version control:** Git dan GitHub
+
+> Sesuaikan versi PHP, database, dan package dengan konfigurasi aktual project.
+
+## Fitur Utama
+
+### 1. Autentikasi dan Otorisasi
+- Registrasi dan login pengguna.
+- Endpoint autentikasi berbasis API.
+- Proteksi endpoint menggunakan `auth:sanctum`.
+- Pembatasan fitur admin menggunakan middleware `role:admin`.
+
+### 2. Pelaporan Fasilitas
+- Membuat laporan dengan memilih fasilitas.
+- Mengisi judul dan deskripsi kerusakan.
+- Mengunggah foto bukti kerusakan.
+- Status awal laporan adalah `menunggu`.
+- Prioritas ditetapkan admin setelah peninjauan.
+
+### 3. Pengelolaan Laporan
+- Melihat daftar dan detail laporan.
+- Mencari laporan berdasarkan kata kunci.
+- Memfilter laporan berdasarkan status dan prioritas.
+- Memperbarui atau menghapus laporan sesuai otorisasi.
+
+### 4. Master Data
+- Pengelolaan fasilitas kampus.
+- Pengelolaan kategori laporan.
+- Pengelolaan data pengguna oleh admin.
+
+### 5. Komentar Laporan
+- Melihat dan menambahkan komentar pada laporan.
+- Memperbarui atau menghapus komentar sesuai aturan akses aplikasi.
+
+## Gambaran Skema Data
+
+Entitas utama aplikasi:
+
+- `users`: data akun dan peran pengguna.
+- `facilities`: data fasilitas kampus.
+- `categories`: kategori laporan.
+- `reports`: data laporan, pelapor, fasilitas, status, prioritas, dan foto.
+- `comments`: komentar yang terkait dengan laporan.
+
+Relasi dan nama kolom mengikuti migration serta model yang tersedia di repository.
+
+## Persyaratan
+
+Pastikan perangkat telah memiliki:
+- PHP dan ekstensi yang dibutuhkan Laravel.
+- Composer.
+- Node.js dan npm.
+- MySQL atau database yang dikonfigurasi pada project.
+- Git.
+- Laragon (opsional untuk Windows).
+
+## Panduan Instalasi Lokal
+
+### 1. Clone repository
+
 ```bash
-git clone <URL_REPOSITORY>
+git clone https://github.com/ardinajihanmm/Kelompok2-ShiftA-ResponsiPemweb2Laravel.git
 cd Kelompok2-ShiftA-ResponsiPemweb2Laravel
+```
+
+### 2. Install dependensi
+
+```bash
 composer install
-copy .env.example .env
+npm install
+```
+
+### 3. Konfigurasi environment
+
+Salin `.env.example` menjadi `.env`.
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Buat application key:
+
+```bash
 php artisan key:generate
 ```
 
-Atur database di `.env`:
-```env
+### 4. Atur database
+
+Buat database lokal, lalu sesuaikan konfigurasi di file `.env`:
+
+```dotenv
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=fastrack
+DB_DATABASE=nama_database
 DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Lalu:
+Sesuaikan nama database dan kredensial dengan konfigurasi MySQL lokal.
+
+### 5. Jalankan migration dan seeder
+
 ```bash
-php artisan migrate:fresh --seed
+php artisan migrate --seed
+```
+
+Jika database sudah berisi data penting, buat backup terlebih dahulu. Hindari `php artisan migrate:fresh` karena perintah tersebut menghapus tabel beserta datanya.
+
+### 6. Siapkan penyimpanan foto
+
+```bash
+php artisan storage:link
+```
+
+### 7. Jalankan aplikasi
+
+Terminal pertama:
+
+```bash
 php artisan serve
 ```
 
-Buka `http://127.0.0.1:8000`.
+Terminal kedua, jika aset frontend menggunakan Vite:
 
-## Akun Pengujian
-**Admin**
-- Email: `admin@fastrack.test`
-- Password: `password123`
+```bash
+npm run dev
+```
 
-**Mahasiswa**
-- Email: `mahasiswa@fastrack.test`
-- Password: `password123`
+Buka alamat lokal yang ditampilkan oleh `php artisan serve`, biasanya `http://127.0.0.1:8000`.
 
-## Deployment
-Isi link aplikasi live di bagian ini setelah deployment:
-`[LINK DEPLOYMENT]`
+## Endpoint API Utama
 
-## Video Dokumentasi Individu
-Isi link video masing-masing anggota:
-- Anggota 1 — Authentication & Authorization: `[LINK VIDEO]`
-- Anggota 2 — Report API: `[LINK VIDEO]`
-- Anggota 3 — Category & Facility API: `[LINK VIDEO]`
-- Anggota 4 — Comment API & Frontend: `[LINK VIDEO]`
+Tabel berikut adalah gambaran endpoint yang digunakan. Periksa `php artisan route:list` untuk memastikan metode, middleware, dan endpoint aktual.
 
-## Catatan
-Untuk endpoint yang membutuhkan autentikasi, gunakan header:
-`Authorization: Bearer <TOKEN>`
+| Modul | Endpoint | Keterangan |
+|---|---|---|
+| Registrasi | `POST /api/auth/register` | Membuat akun |
+| Login | `POST /api/auth/login` | Login pengguna |
+| Logout | `POST /api/auth/logout` | Logout dengan autentikasi |
+| Profil pengguna aktif | `GET /api/auth/me` | Mengambil data pengguna aktif |
+| Laporan | `/api/reports` | Operasi laporan melalui API resource |
+| Fasilitas | `/api/facilities` | Membaca data fasilitas |
+| Kategori | `/api/categories` | Membaca data kategori |
+| Komentar | `/api/reports/{report}/comments` | Membaca atau menambahkan komentar |
+| Pengguna | `/api/users` | Pengelolaan pengguna oleh admin |
+
+Endpoint yang memerlukan autentikasi harus dipanggil dengan token yang sesuai. Operasi admin juga memerlukan peran admin.
+
+## Pengembangan dan Troubleshooting
+
+- Periksa daftar route dengan `php artisan route:list`.
+- Bersihkan cache aplikasi dengan `php artisan optimize:clear`.
+- Bersihkan cache Blade dengan `php artisan view:clear`.
+- Jika foto tidak tampil, pastikan upload berhasil, file tersimpan di disk `public`, dan `php artisan storage:link` sudah dijalankan.
+- Jangan commit file `.env` atau kredensial database ke repository.
+- Sebelum menggabungkan perubahan tim, periksa konflik Git dan pastikan penanda `<<<<<<<`, `=======`, atau `>>>>>>>` tidak tertinggal di file aplikasi.
+

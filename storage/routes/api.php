@@ -41,7 +41,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Khusus admin
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-    Route::post('/reports/admin', [ReportController::class, 'storeByAdmin']);
     Route::apiResource('users', UserController::class);
 
     Route::post('/categories', [CategoryController::class, 'store']);

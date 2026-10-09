@@ -1,16 +1,19 @@
-<<<<<<< HEAD
 @extends('layouts.dashboard')
 
-@section('title', 'Semua Laporan')
+@section('title', 'Laporan')
 
 @section('content')
     <div class="page-head">
         <div>
-            <h1>Semua Laporan</h1>
-            <p>Kelola dan telusuri laporan kerusakan fasilitas kampus.</p>
+            <h1 data-text-admin="Semua Laporan" data-text-mahasiswa="Laporan Saya">Laporan</h1>
+            <p data-text-admin="Kelola dan tindak lanjuti laporan kerusakan fasilitas dari seluruh mahasiswa."
+               data-text-mahasiswa="Pantau perkembangan laporan kerusakan fasilitas yang kamu buat.">Telusuri laporan kerusakan fasilitas kampus.</p>
         </div>
         <div class="head-actions">
-            <a href="{{ route('reports.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Buat laporan</a>
+            <a href="{{ route('reports.create') }}" class="btn btn-primary mahasiswa-only hidden"><i class="bi bi-plus-lg"></i> Buat laporan</a>
+            <button type="button" class="btn btn-primary admin-only hidden" id="adminCreateReportBtn">
+                <i class="bi bi-plus-lg"></i> Tambah laporan
+            </button>
         </div>
     </div>
 
@@ -36,326 +39,58 @@
         <div id="reportTable"></div>
         <div class="pagination" id="pagination"></div>
     </section>
+
+    <div id="adminReportModal" class="modal-overlay" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.55);padding:20px;overflow:auto;align-items:center;justify-content:center">
+        <section class="panel" style="width:min(680px,100%);margin:auto">
+            <div class="panel-head" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <div><h2 id="adminReportModalTitle">Tambah laporan</h2><p>Isi informasi laporan yang akan dicatat admin.</p></div>
+                <button type="button" class="btn btn-outline btn-sm" id="adminReportCloseBtn" aria-label="Tutup">Tutup</button>
+            </div>
+            <div id="adminReportMsg"></div>
+            <form id="adminReportForm">
+                <input type="hidden" id="adminReportId">
+                <div class="field" style="margin-bottom:14px">
+                    <label for="adminReportFacility">Fasilitas</label>
+                    <select class="select" id="adminReportFacility" required><option value="">Memuat fasilitas...</option></select>
+                </div>
+                <div class="field" style="margin-bottom:14px">
+                    <label for="adminReportTitle">Judul laporan</label>
+                    <input class="input" id="adminReportTitle" maxlength="255" required>
+                </div>
+                <div class="field" style="margin-bottom:14px">
+                    <label for="adminReportDescription">Deskripsi</label>
+                    <textarea class="textarea" id="adminReportDescription" required></textarea>
+                </div>
+                <div class="form-grid" style="margin-bottom:14px">
+                    <div class="field">
+                        <label for="adminReportStatus">Status</label>
+                        <select class="select" id="adminReportStatus">
+                            <option value="menunggu">Menunggu</option><option value="diproses">Diproses</option><option value="selesai">Selesai</option><option value="ditolak">Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="adminReportPriority">Prioritas</label>
+                        <select class="select" id="adminReportPriority">
+                            <option value="low">Rendah</option><option value="medium" selected>Sedang</option><option value="high">Tinggi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field" style="margin-bottom:18px">
+                    <label for="adminReportPhoto">Foto bukti (opsional)</label>
+                    <input class="input" type="file" id="adminReportPhoto" accept="image/jpeg,image/png,image/webp">
+                    <small class="field-hint">JPG, PNG, atau WEBP. Maksimal 2 MB.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="adminReportCancelBtn">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="adminReportSaveBtn">Simpan laporan</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
 @endsection
 
 @push('scripts')
     <script src="{{ asset('js/pages/reports-common.js') }}"></script>
-    <script src="{{ asset('js/pages/reports-index.js') }}"></script>
+    <script src="{{ asset('js/pages/reports-index.js') . '?v=20261009crud1' }}"></script>
 @endpush
-=======
-@extends('layouts.app')
-
-@section('title', 'Laporan - LaporKita')
-
-@section('content')
-
-    <div class="page">
-        <div class="container">
-
-            <div class="page-title-row">
-                <div class="page-title" style="margin-bottom:0;">
-                    <h1>Daftar Laporan 📋</h1>
-                    <p>Lihat dan pantau laporan fasilitas kampus.</p>
-                </div>
-
-                <a href="{{ route('reports.create') }}" class="btn btn-primary">
-                    + Buat Laporan
-                </a>
-            </div>
-
-            <div class="filter-bar card">
-                <input
-                    type="text"
-                    id="search-report"
-                    class="form-control"
-                    placeholder="🔍 Cari laporan..."
-                >
-
-                <select id="filter-status" class="form-control">
-                    <option value="">Semua Status</option>
-                    <option value="menunggu">Menunggu</option>
-                    <option value="diproses">Diproses</option>
-                    <option value="selesai">Selesai</option>
-                    <option value="ditolak">Ditolak</option>
-                </select>
-            </div>
-
-            <div id="error-message" class="alert alert-error" style="display:none;"></div>
-
-            <div id="report-grid" class="report-grid">
-                <p id="loading-message">Memuat laporan...</p>
-            </div>
-
-        </div>
-    </div>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', async function () {
-        const grid = document.getElementById('report-grid');
-        const errorMessage = document.getElementById('error-message');
-        const searchInput = document.getElementById('search-report');
-        const statusFilter = document.getElementById('filter-status');
-
-        let reports = [];
-
-        function escapeHtml(value) {
-            return String(value ?? '').replace(/[&<>"']/g, function (char) {
-                return {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#039;'
-                }[char];
-            });
-        }
-
-        function statusLabel(status) {
-            const labels = {
-                menunggu: 'Menunggu',
-                diproses: 'Diproses',
-                selesai: 'Selesai',
-                ditolak: 'Ditolak'
-            };
-
-            return labels[status] || status;
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return '-';
-
-            const date = new Date(dateString);
-
-            if (Number.isNaN(date.getTime())) return '-';
-
-            return date.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
-        }
-
-        function renderReports() {
-            const keyword = searchInput.value.trim().toLowerCase();
-            const selectedStatus = statusFilter.value;
-
-            const filtered = reports.filter(function (report) {
-                const searchableText = [
-                    report.title,
-                    report.description,
-                    report.facility?.name,
-                    report.facility?.location,
-                    report.status
-                ].join(' ').toLowerCase();
-
-                return searchableText.includes(keyword) &&
-                    (!selectedStatus || report.status === selectedStatus);
-            });
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '<p>Belum ada laporan yang sesuai dengan pencarian.</p>';
-                return;
-            }
-
-            grid.innerHTML = filtered.map(function (report) {
-                const statusClasses = {
-                    menunggu: 'status-waiting',
-                    diproses: 'status-process',
-                    selesai: 'status-done',
-                    ditolak: 'status-rejected'
-                };
-
-                const facilityName = report.facility?.name || 'Fasilitas tidak diketahui';
-                const location = report.facility?.location || 'Lokasi tidak tersedia';
-
-                return `
-                    <div class="report-card">
-                        <div class="report-card-top">
-                            <span class="category">🏢 ${escapeHtml(facilityName)}</span>
-                            <span class="status ${statusClasses[report.status] || 'status-waiting'}">
-                                ${escapeHtml(statusLabel(report.status))}
-                            </span>
-                        </div>
-
-                        <h3>${escapeHtml(report.title)}</h3>
-
-                        <p>${escapeHtml(report.description)}</p>
-
-                        <div class="report-location">
-                            📍 ${escapeHtml(location)}
-                        </div>
-
-                        <div class="report-card-footer">
-                            <small>Dibuat ${escapeHtml(formatDate(report.created_at))}</small>
-
-                            <a href="/laporan/${encodeURIComponent(report.id)}">
-                                Lihat Detail →
-                            </a>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        async function loadReports() {
-            const token = localStorage.getItem('auth_token');
-
-            grid.innerHTML = '<p>Memuat laporan...</p>';
-            errorMessage.style.display = 'none';
-
-            try {
-                const headers = {
-                    'Accept': 'application/json'
-                };
-
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
-
-                const response = await fetch('/api/reports', {
-                    method: 'GET',
-                    headers: headers
-                });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result.message || 'Gagal mengambil daftar laporan.');
-                }
-
-                reports = Array.isArray(result.data) ? result.data : [];
-                renderReports();
-
-            } catch (error) {
-                grid.innerHTML = '';
-                errorMessage.textContent =
-                    error.message || 'Tidak dapat terhubung ke server.';
-                errorMessage.style.display = 'block';
-            }
-        }
-
-        searchInput.addEventListener('input', renderReports);
-        statusFilter.addEventListener('change', renderReports);
-
-        await loadReports();
-    });
-    </script>
-
-@endsection
-
-@section('styles')
-    <style>
-        .page-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .filter-bar {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .report-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 20px;
-        }
-
-        .report-card {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 22px;
-            min-width: 0;
-        }
-
-        .report-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            gap: 10px;
-        }
-
-        .category {
-            font-size: 12px;
-            color: #2563eb;
-            background: #eff6ff;
-            padding: 6px 9px;
-            border-radius: 20px;
-        }
-
-        .report-card h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
-            overflow-wrap: anywhere;
-        }
-
-        .report-card p {
-            color: #6b7280;
-            font-size: 14px;
-            line-height: 1.6;
-            min-height: 68px;
-            overflow-wrap: anywhere;
-        }
-
-        .report-location {
-            color: #4b5563;
-            font-size: 13px;
-            margin: 18px 0;
-        }
-
-        .report-card-footer {
-            padding-top: 15px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .report-card-footer small {
-            color: #9ca3af;
-        }
-
-        .report-card-footer a {
-            color: #2563eb;
-            font-size: 13px;
-            font-weight: bold;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
-        @media (max-width: 900px) {
-            .report-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 650px) {
-            .report-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .page-title-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-
-            .filter-bar {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-<<<<<<< HEAD
-@endsection
-=======
-
-@endsection
->>>>>>> 11b79d0503820be29c9e99fff948bef4cce0607b
->>>>>>> 5f287d4ee30cd078aa0738cb9042e57796871337

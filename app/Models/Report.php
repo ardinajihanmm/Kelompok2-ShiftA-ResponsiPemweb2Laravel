@@ -15,4 +15,10 @@ class Report extends Model
     public function user(): BelongsTo { return $this->belongsTo(User::class); }
     public function facility(): BelongsTo { return $this->belongsTo(Facility::class); }
     public function comments(): HasMany { return $this->hasMany(Comment::class); }
+
+    /** Admin boleh mengakses semua laporan; mahasiswa hanya laporan miliknya. */
+    public function isAccessibleBy(User $user): bool
+    {
+        return $user->role === 'admin' || $this->user_id === $user->id;
+    }
 }

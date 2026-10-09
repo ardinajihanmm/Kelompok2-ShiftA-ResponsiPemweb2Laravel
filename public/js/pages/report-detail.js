@@ -8,6 +8,17 @@
   const isAdmin = () => FT.user?.role === 'admin';
   const isOwner = () => report?.user?.id === FT.user?.id;
 
+  // Prefer the stored path so the browser loads the actual public-storage file.
+  function getPhotoUrl(r) {
+    if (r?.photo_path) {
+      return '/storage/' + String(r.photo_path).replace(/^\/+/, '');
+    }
+    if (r?.photo_url) {
+      return r.photo_url;
+    }
+    return null;
+  }
+
   function steps(status) {
     let list;
     if (status === 'ditolak') {
@@ -30,7 +41,21 @@
           <div class="meta-row">${FT.statusBadge(r.status)} ${FT.priorityBadge(r.priority)} <span class="tag">#${r.id}</span></div>
           <h1 class="detail-title">${esc(r.title)}</h1>
           <div class="desc-text">${esc(r.description)}</div>
-          ${r.photo_url ? `<div class="report-photo-wrap" style="margin-top:20px"><h3 style="font-size:16px;margin:0 0 10px">Foto bukti kerusakan</h3><a href="${esc(r.photo_url)}" target="_blank" rel="noopener"><img src="${esc(r.photo_url)}" alt="Foto bukti kerusakan laporan #${r.id}" style="display:block;max-width:100%;max-height:420px;object-fit:contain;border-radius:14px;border:1px solid #dbe3ef"></a></div>` : `<div class="field-hint" style="margin-top:18px">${r.photo_path ? 'Foto bukti tersimpan, tetapi URL belum tersedia.' : 'Belum ada foto bukti pada laporan ini.'}</div>`}
+          ${(() => {
+            const photoUrl = getPhotoUrl(r);
+            if (!photoUrl) {
+              return `<div class="field-hint" style="margin-top:18px">Belum ada foto bukti pada laporan ini.</div>`;
+            }
+            const fallbackUrl = r.photo_url && r.photo_url !== photoUrl ? r.photo_url : null;
+            return `<div class="report-photo-wrap" style="margin-top:20px">
+              <h3 style="font-size:16px;margin:0 0 10px">Foto bukti kerusakan</h3>
+              <a href="${esc(photoUrl)}" target="_blank" rel="noopener" id="reportPhotoLink">
+                <img src="${esc(photoUrl)}" alt="Foto bukti kerusakan laporan #${r.id}"
+                  style="display:block;max-width:100%;max-height:420px;object-fit:contain;border-radius:14px;border:1px solid #dbe3ef"
+                  onerror="if (this.dataset.fallbackTried !== '1' && ${fallbackUrl ? 'true' : 'false'}) { this.dataset.fallbackTried = '1'; this.src = ${fallbackUrl ? "'" + fallbackUrl.replace("\\", "\\\\").replace("'", "\\'") + "'" : "''"}; this.parentElement.href = this.src; } else { this.style.display='none'; this.parentElement.insertAdjacentHTML('afterend','<p class=&quot;field-hint&quot;>Foto gagal dimuat. Klik <a href=&quot;${esc(photoUrl)}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;>di sini</a> untuk membuka foto langsung.</p>'); }">
+              </a>
+            </div>`;
+          })()}
         </section>
 
         <section class="panel">
@@ -151,7 +176,7 @@
   FT.ready.then(async () => {
     const res = await FT.api('/reports/' + id);
     if (!res.ok) {
-      root.innerHTML = `<div class="panel">${FT.empty('file-earmark-x', res.status === 404 ? 'Laporan tidak ditemukan' : 'Gagal memuat laporan', FT.errorText(res.data), '<a class="btn btn-primary btn-sm" href="/reports">Kembali ke daftar</a>')}</div>`;
+      root.innerHTML = `<div class="panel">${FT.empty(res.status === 403 ? 'shield-lock' : 'file-earmark-x', res.status === 404 ? 'Laporan tidak ditemukan' : res.status === 403 ? 'Akses ditolak' : 'Gagal memuat laporan', res.status === 403 ? 'Kamu hanya dapat membuka laporan yang kamu buat sendiri.' : FT.errorText(res.data), '<a class="btn btn-primary btn-sm" href="/reports">Kembali ke daftar</a>')}</div>`;
       return;
     }
     report = res.data.data; render();

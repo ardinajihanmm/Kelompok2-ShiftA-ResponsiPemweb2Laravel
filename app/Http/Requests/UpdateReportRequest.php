@@ -20,8 +20,8 @@ class UpdateReportRequest extends FormRequest
         }
 
         // Mahasiswa hanya boleh mengubah laporan miliknya,
-        // dan tidak boleh mengubah status laporan.
-        return $report->user_id === $user->id && !$this->has('status');
+        // dan tidak boleh mengubah status maupun prioritas (ditentukan admin).
+        return $report->user_id === $user->id && !$this->hasAny(['status', 'priority']);
     }
 
     public function rules(): array

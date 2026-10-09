@@ -14,9 +14,9 @@
     </div>
 
     <div id="formWrap" class="panel form-panel hidden" style="margin-bottom:20px">
-        <div class="panel-head"><h2>Tambah fasilitas</h2></div>
+        <div class="panel-head"><h2 id="facilityFormTitle">Tambah fasilitas</h2></div>
         <div id="formMsg"></div>
-        <form id="facilityForm" novalidate>
+        <form id="facilityForm" novalidate><input type="hidden" id="facilityId">
             <div class="form-grid">
                 <div class="field"><label for="fName">Nama fasilitas <span class="req">*</span></label><input class="input" id="fName" required></div>
                 <div class="field"><label for="fLocation">Lokasi <span class="req">*</span></label><input class="input" id="fLocation" placeholder="Gedung A, lantai 2" required></div>

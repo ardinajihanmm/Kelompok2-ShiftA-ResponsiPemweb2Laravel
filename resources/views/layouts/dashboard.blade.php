@@ -13,7 +13,7 @@
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
     @stack('styles')
 </head>
-<body data-admin="@yield('admin', '0')">
+<body data-roles="@yield('roles')">
     <div class="shell">
         @include('partials.dashboard.sidebar')
         <div class="overlay" id="overlay"></div>

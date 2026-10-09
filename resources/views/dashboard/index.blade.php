@@ -9,7 +9,8 @@
             <p>Ringkasan laporan dan aktivitas fasilitas kampus hari ini.</p>
         </div>
         <div class="head-actions">
-            <a href="{{ route('reports.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Buat laporan</a>
+            <a href="{{ route('reports.create') }}" class="btn btn-primary mahasiswa-only hidden"><i class="bi bi-plus-lg"></i> Buat laporan</a>
+            <a href="{{ route('reports.index') }}" class="btn btn-primary admin-only hidden"><i class="bi bi-clipboard2-data"></i> Kelola laporan</a>
         </div>
     </div>
 
@@ -59,8 +60,9 @@
             <section class="panel">
                 <div class="panel-head"><div><h2>Akses cepat</h2><p>Langsung ke aktivitas utama.</p></div></div>
                 <div class="quick-list">
-                    <a class="quick" href="{{ route('reports.create') }}"><span class="q-ico"><i class="bi bi-plus-lg"></i></span><span><strong>Buat laporan baru</strong><small>Laporkan kerusakan fasilitas</small></span><i class="bi bi-chevron-right"></i></a>
-                    <a class="quick" href="{{ route('reports.index') }}"><span class="q-ico"><i class="bi bi-search"></i></span><span><strong>Monitoring laporan</strong><small>Cari dan filter perkembangan</small></span><i class="bi bi-chevron-right"></i></a>
+                    <a class="quick mahasiswa-only hidden" href="{{ route('reports.create') }}"><span class="q-ico"><i class="bi bi-plus-lg"></i></span><span><strong>Buat laporan baru</strong><small>Laporkan kerusakan fasilitas</small></span><i class="bi bi-chevron-right"></i></a>
+                    <a class="quick" href="{{ route('reports.index') }}"><span class="q-ico"><i class="bi bi-search"></i></span><span><strong data-text-admin="Monitoring semua laporan" data-text-mahasiswa="Laporan saya">Monitoring laporan</strong><small>Cari dan filter perkembangan</small></span><i class="bi bi-chevron-right"></i></a>
+                    <a class="quick admin-only hidden" href="{{ route('users.index') }}"><span class="q-ico"><i class="bi bi-people"></i></span><span><strong>Kelola pengguna</strong><small>Lihat akun mahasiswa dan admin</small></span><i class="bi bi-chevron-right"></i></a>
                     <a class="quick" href="{{ route('facilities.index') }}"><span class="q-ico"><i class="bi bi-building"></i></span><span><strong>Direktori fasilitas</strong><small>Lihat lokasi fasilitas kampus</small></span><i class="bi bi-chevron-right"></i></a>
                 </div>
             </section>

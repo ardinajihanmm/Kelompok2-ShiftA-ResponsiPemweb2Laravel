@@ -13,7 +13,11 @@
       ${FT.statusBadge(r.status)}
     </a>`;
 
-  FT.reportList = items => items.length
-    ? `<div class="report-list">${items.map(FT.reportItem).join('')}</div>`
-    : FT.empty('clipboard2-x', 'Belum ada laporan', 'Mulai dengan membuat laporan pertama.', '<a class="btn btn-primary btn-sm" href="/reports/create"><i class="bi bi-plus-lg"></i> Buat laporan</a>');
+  // Tombol "Buat laporan" hanya untuk mahasiswa; admin tidak membuat laporan.
+  FT.reportList = items => {
+    if (items.length) return `<div class="report-list">${items.map(FT.reportItem).join('')}</div>`;
+    return FT.user?.role === 'admin'
+      ? FT.empty('clipboard2-x', 'Belum ada laporan masuk', 'Laporan dari mahasiswa akan muncul di sini.')
+      : FT.empty('clipboard2-x', 'Belum ada laporan', 'Mulai dengan membuat laporan pertama.', '<a class="btn btn-primary btn-sm" href="/reports/create"><i class="bi bi-plus-lg"></i> Buat laporan</a>');
+  };
 })();

@@ -72,8 +72,16 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
+        if ((int) $request->user()->id === (int) $user->id) {
+            return response()->json(['message' => 'Akun yang sedang digunakan tidak dapat dihapus.'], 422);
+        }
+
+        if ($user->reports()->exists()) {
+            return response()->json(['message' => 'Pengguna tidak dapat dihapus karena masih memiliki laporan.'], 422);
+        }
+
         $user->delete();
 
         return response()->json([

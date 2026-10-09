@@ -1,57 +1,12 @@
 (function () {
-  'use strict';
-  const { $, esc } = FT;
-  const state = { items: [], categories: [], cat: '' };
-
-  function render() {
-    const q = $('#facilitySearch').value.trim().toLowerCase();
-    const items = state.items.filter(f =>
-      (!state.cat || String(f.category?.id) === state.cat) &&
-      (f.name + ' ' + (f.location || '') + ' ' + (f.category?.name || '')).toLowerCase().includes(q));
-    $('#facilityCount').textContent = items.length + ' fasilitas';
-
-    $('#facilityGrid').innerHTML = items.length ? items.map(f => `
-      <article class="fac-card">
-        <div class="fac-top"><span class="fac-ico"><i class="bi bi-building"></i></span><span class="tag">${esc(f.category?.name || 'Tanpa kategori')}</span></div>
-        <div><h3>${esc(f.name)}</h3><div class="fac-loc"><i class="bi bi-geo-alt-fill"></i>${esc(f.location || '-')}</div></div>
-        <p class="fac-desc">${esc(f.description || 'Belum ada deskripsi.')}</p>
-        <a class="btn btn-soft btn-sm" href="/reports/create?facility=${f.id}"><i class="bi bi-megaphone"></i> Laporkan kerusakan</a>
-      </article>`).join('')
-      : `<div class="panel" style="grid-column:1/-1">${FT.empty('building-x', 'Fasilitas tidak ditemukan', 'Coba kata kunci atau kategori lain.')}</div>`;
-  }
-
-  function renderChips() {
-    const chips = [['', 'Semua'], ...state.categories.map(c => [String(c.id), c.name])];
-    $('#categoryChips').innerHTML = chips.map(([v, n]) => `<button class="chip ${state.cat === v ? 'active' : ''}" data-cat="${esc(v)}">${esc(n)}</button>`).join('');
-    $('#fCategory').innerHTML = '<option value="">Pilih kategori...</option>' + state.categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
-  }
-
-  async function load() {
-    $('#facilityGrid').innerHTML = Array.from({ length: 6 }, () => '<div class="skeleton" style="height:190px;border-radius:20px"></div>').join('');
-    const [f, c] = await Promise.all([FT.fetchAll('/facilities?per_page=100'), FT.fetchAll('/categories?per_page=100')]);
-    if (!f.ok) { $('#facilityGrid').innerHTML = `<div class="panel" style="grid-column:1/-1">${FT.empty('wifi-off', 'Gagal memuat fasilitas', FT.errorText(f.data))}</div>`; return; }
-    state.items = f.items; state.categories = c.items;
-    renderChips(); render();
-  }
-
-  $('#categoryChips').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (!b) return; state.cat = b.dataset.cat; renderChips(); render(); });
-  $('#facilitySearch').addEventListener('input', FT.debounce(render, 150));
-
-  const toggleForm = show => $('#formWrap').classList.toggle('hidden', typeof show === 'boolean' ? !show : $('#formWrap').classList.contains('hidden') ? false : true);
-  $('#toggleFormBtn')?.addEventListener('click', () => toggleForm());
-  $('#cancelFormBtn').addEventListener('click', () => toggleForm(false));
-
-  $('#facilityForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const btn = $('#saveBtn');
-    const body = { name: $('#fName').value.trim(), location: $('#fLocation').value.trim(), category_id: Number($('#fCategory').value), description: $('#fDesc').value.trim() };
-    if (!body.name || !body.location || !body.category_id) { FT.alert('#formMsg', 'Nama, lokasi, dan kategori wajib diisi.'); return; }
-    FT.alert('#formMsg', ''); FT.loading(btn, true);
-    const r = await FT.api('/facilities', { method: 'POST', body: JSON.stringify(body) });
-    FT.loading(btn, false);
-    if (!r.ok) { FT.alert('#formMsg', FT.errorText(r.data, 'Gagal menyimpan fasilitas.')); return; }
-    e.target.reset(); toggleForm(false); FT.toast('Fasilitas berhasil ditambahkan.'); load();
-  });
-
+  'use strict'; const { $, esc } = FT; const state={items:[],categories:[],cat:'',editing:null};
+  function render(){const q=$('#facilitySearch').value.trim().toLowerCase();const items=state.items.filter(f=>(!state.cat||String(f.category?.id)===state.cat)&&(f.name+' '+(f.location||'')+' '+(f.category?.name||'')).toLowerCase().includes(q));$('#facilityCount').textContent=items.length+' fasilitas';$('#facilityGrid').innerHTML=items.length?items.map(f=>`<article class="fac-card"><div class="fac-top"><span class="fac-ico"><i class="bi bi-building"></i></span><span class="tag">${esc(f.category?.name||'Tanpa kategori')}</span></div><div><h3>${esc(f.name)}</h3><div class="fac-loc"><i class="bi bi-geo-alt-fill"></i>${esc(f.location||'-')}</div></div><p class="fac-desc">${esc(f.description||'Belum ada deskripsi.')}</p>${FT.user?.role==='mahasiswa'?`<a class="btn btn-soft btn-sm" href="/reports/create?facility=${f.id}"><i class="bi bi-megaphone"></i> Laporkan kerusakan</a>`:''}${FT.user?.role==='admin'?`<div class="head-actions"><button class="btn btn-outline btn-sm" data-edit-facility="${f.id}"><i class="bi bi-pencil"></i> Edit</button><button class="btn btn-danger btn-sm" data-delete-facility="${f.id}"><i class="bi bi-trash"></i> Hapus</button></div>`:''}</article>`).join(''):`<div class="panel" style="grid-column:1/-1">${FT.empty('building-x','Fasilitas tidak ditemukan','Coba kata kunci atau kategori lain.')}</div>`;}
+  function renderChips(){const chips=[['','Semua'],...state.categories.map(c=>[String(c.id),c.name])];$('#categoryChips').innerHTML=chips.map(([v,n])=>`<button class="chip ${state.cat===v?'active':''}" data-cat="${esc(v)}">${esc(n)}</button>`).join('');$('#fCategory').innerHTML='<option value="">Pilih kategori...</option>'+state.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');}
+  async function load(){ $('#facilityGrid').innerHTML=Array.from({length:6},()=>'<div class="skeleton" style="height:190px;border-radius:20px"></div>').join('');const [f,c]=await Promise.all([FT.fetchAll('/facilities?per_page=100'),FT.fetchAll('/categories?per_page=100')]);if(!f.ok){$('#facilityGrid').innerHTML=`<div class="panel" style="grid-column:1/-1">${FT.empty('wifi-off','Gagal memuat fasilitas',FT.errorText(f.data))}</div>`;return;}state.items=f.items;state.categories=c.items;renderChips();render();}
+  const toggleForm=show=>$('#formWrap').classList.toggle('hidden',typeof show==='boolean'?!show:!$('#formWrap').classList.contains('hidden'));
+  function openForm(f=null){state.editing=f?.id||null;$('#facilityFormTitle').textContent=f?'Edit fasilitas':'Tambah fasilitas';$('#saveBtn').textContent=f?'Simpan perubahan':'Simpan fasilitas';$('#facilityId').value=f?.id||'';$('#fName').value=f?.name||'';$('#fLocation').value=f?.location||'';$('#fCategory').value=f?.category_id||f?.category?.id||'';$('#fDesc').value=f?.description||'';FT.alert('#formMsg','');toggleForm(true);$('#formWrap').scrollIntoView({behavior:'smooth',block:'start'});}
+  $('#toggleFormBtn')?.addEventListener('click',()=>openForm());$('#cancelFormBtn').addEventListener('click',()=>{toggleForm(false);state.editing=null;$('#facilityForm').reset();});$('#categoryChips').addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;state.cat=b.dataset.cat;renderChips();render();});$('#facilitySearch').addEventListener('input',FT.debounce(render,150));
+  $('#facilityGrid').addEventListener('click',async e=>{const eb=e.target.closest('[data-edit-facility]'),db=e.target.closest('[data-delete-facility]');if(eb){const f=state.items.find(x=>String(x.id)===eb.dataset.editFacility);if(f)openForm(f);return;}if(db){const id=db.dataset.deleteFacility;if(!await FT.confirm({title:'Hapus fasilitas?',text:'Pastikan fasilitas ini tidak sedang digunakan dalam laporan.',okText:'Ya, hapus'}))return;db.disabled=true;const r=await FT.api('/facilities/'+id,{method:'DELETE'});if(!r.ok){FT.toast(FT.errorText(r.data,'Gagal menghapus fasilitas.'),'error');db.disabled=false;return;}FT.toast('Fasilitas berhasil dihapus.');load();}});
+  $('#facilityForm').addEventListener('submit',async e=>{e.preventDefault();const body={name:$('#fName').value.trim(),location:$('#fLocation').value.trim(),category_id:Number($('#fCategory').value),description:$('#fDesc').value.trim()};if(!body.name||!body.location||!body.category_id){FT.alert('#formMsg','Nama, lokasi, dan kategori wajib diisi.');return;}const btn=$('#saveBtn');FT.alert('#formMsg','');FT.loading(btn,true);const r=await FT.api(state.editing?'/facilities/'+state.editing:'/facilities',{method:state.editing?'PUT':'POST',body:JSON.stringify(body)});FT.loading(btn,false);if(!r.ok){FT.alert('#formMsg',FT.errorText(r.data,'Gagal menyimpan fasilitas.'));return;}FT.toast(state.editing?'Fasilitas berhasil diperbarui.':'Fasilitas berhasil ditambahkan.');e.target.reset();state.editing=null;toggleForm(false);load();});
   FT.ready.then(load);
 })();

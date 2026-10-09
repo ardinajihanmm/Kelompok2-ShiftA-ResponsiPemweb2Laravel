@@ -11,8 +11,24 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function index(Report $report)
+    private function denyUnlessAccessible(Request $request, Report $report)
     {
+        if (! $report->isAccessibleBy($request->user())) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses',
+            ], 403);
+        }
+
+        return null;
+    }
+
+    public function index(Request $request, Report $report)
+    {
+        if ($denied = $this->denyUnlessAccessible($request, $report)) {
+            return $denied;
+        }
+
         $comments = $report->comments()
             ->with('user:id,name,role')
             ->latest()
@@ -26,6 +42,10 @@ class CommentController extends Controller
 
     public function store(StoreCommentRequest $request, Report $report)
     {
+        if ($denied = $this->denyUnlessAccessible($request, $report)) {
+            return $denied;
+        }
+
         $comment = $report->comments()->create([
             'user_id' => $request->user()->id,
             'comment' => $request->comment,
