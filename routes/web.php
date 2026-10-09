@@ -3,6 +3,7 @@
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
+<<<<<<< HEAD
 /*
 |--------------------------------------------------------------------------
 | Landing & Authentication (publik)
@@ -30,3 +31,32 @@ Route::get('/profile', [PageController::class, 'profile'])->name('profile');
 
 // Kompatibilitas: URL lama /app diarahkan ke dashboard
 Route::redirect('/app', '/dashboard')->name('app');
+=======
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
+
+Route::get('/laporan', function () {
+    return view('reports.index');
+})->name('reports.index');
+
+Route::get('/laporan/buat', function () {
+    return view('reports.create');
+})->name('reports.create');
+
+Route::get('/laporan/{id}', function ($id) {
+    return view('reports.show', ['id' => $id]);
+})->name('reports.show');
+>>>>>>> 11b79d0503820be29c9e99fff948bef4cce0607b

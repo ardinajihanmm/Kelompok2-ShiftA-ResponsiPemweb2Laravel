@@ -6,6 +6,11 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\FacilityController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\UserController;
+<<<<<<< HEAD
+=======
+use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\ReportController;
+>>>>>>> 11b79d0503820be29c9e99fff948bef4cce0607b
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -19,6 +24,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+<<<<<<< HEAD
     // Reports: mahasiswa membuat laporan, admin memproses status.
     Route::apiResource('reports', ReportController::class);
 
@@ -28,6 +34,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/facilities', [FacilityController::class, 'index']);
     Route::get('/facilities/{facility}', [FacilityController::class, 'show']);
 
+=======
+
+    Route::apiResource('reports', ReportController::class);
+
+>>>>>>> 11b79d0503820be29c9e99fff948bef4cce0607b
     Route::get('/reports/{report}/comments', [CommentController::class, 'index']);
     Route::post('/reports/{report}/comments', [CommentController::class, 'store']);
 
