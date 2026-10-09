@@ -17,7 +17,7 @@ FasTrack adalah aplikasi web untuk membantu mahasiswa melaporkan kerusakan fasil
 | No. | Nama Lengkap | NIM | Shift Awal | Shift Akhir | Jobdesk / Kontribusi | Link Video Penjelasan |
 |---:|---|---|---|---|---|---|
 | 1 | Muhammad Zaki Dzulfikar | H1D023065 | Shift A | Shift B | CRUD fitur reservasi & autentikasi — sesuaikan dengan kontribusi pada FasTrack | [YouTube/Drive](https://...) |
-| 2 | [Nama Lengkap] | [NIM] | [Shift Awal] | [Shift Akhir] | [Jobdesk / kontribusi] | [YouTube/Drive](https://...) |
+| 2 | Mohammad Zulfan Ramadhan | H1H024008 | Shift A | Shift A | CRUD fitur reports/laporan | [YouTube/Drive](https://youtu.be/J0qRNB-0mbg) |
 | 3 | [Nama Lengkap] | [NIM] | [Shift Awal] | [Shift Akhir] | [Jobdesk / kontribusi] | [YouTube/Drive](https://...) |
 | 4 | [Nama Lengkap] | [NIM] | [Shift Awal] | [Shift Akhir] | [Jobdesk / kontribusi] | [YouTube/Drive](https://...) |
 
