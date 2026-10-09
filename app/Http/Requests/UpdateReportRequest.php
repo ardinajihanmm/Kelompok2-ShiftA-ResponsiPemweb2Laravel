@@ -2,14 +2,26 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateReportRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $user = $this->user();
+        $report = $this->route('report');
+
+        if (!$user || !$report) {
+            return false;
+        }
+
+        if ($user->role === 'admin') {
+            return true;
+        }
+
+        // Mahasiswa hanya boleh mengubah laporan miliknya,
+        // dan tidak boleh mengubah status laporan.
+        return $report->user_id === $user->id && !$this->has('status');
     }
 
     public function rules(): array

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCommentRequest;
+use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Report;
 use Illuminate\Http\Request;
@@ -16,60 +18,52 @@ class CommentController extends Controller
             ->latest()
             ->paginate(10);
 
-        return response()->json([
-            'success' => true,
-            'data' => $comments,
-        ]);
+        return CommentResource::collection($comments)
+            ->additional([
+                'success' => true,
+            ]);
     }
 
-    public function store(Request $request, Report $report)
+    public function store(StoreCommentRequest $request, Report $report)
     {
-        $validated = $request->validate([
-            'comment' => 'required|string|max:1000',
-        ]);
-
         $comment = $report->comments()->create([
             'user_id' => $request->user()->id,
-            'comment' => $validated['comment'],
+            'comment' => $request->comment,
         ]);
 
         $comment->load('user:id,name,role');
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Tanggapan berhasil ditambahkan',
-            'data' => $comment,
-        ], 201);
+        return (new CommentResource($comment))
+            ->additional([
+                'success' => true,
+                'message' => 'Tanggapan berhasil ditambahkan',
+            ])
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function update(Request $request, Comment $comment)
+    public function update(StoreCommentRequest $request, Comment $comment)
     {
-        if ($comment->user_id !== $request->user()->id) {
+        if ($comment->user_id !== $request->user()->id && $request->user()->role !== 'admin') {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak dapat mengubah tanggapan ini',
+                'message' => 'Anda tidak memiliki akses',
             ], 403);
         }
 
-        $validated = $request->validate([
-            'comment' => 'required|string|max:1000',
-        ]);
+        $comment->update($request->validated());
+        $comment->load('user:id,name,role');
 
-        $comment->update($validated);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Tanggapan berhasil diperbarui',
-            'data' => $comment,
-        ]);
+        return (new CommentResource($comment))
+            ->additional([
+                'success' => true,
+                'message' => 'Tanggapan berhasil diperbarui',
+            ]);
     }
 
     public function destroy(Request $request, Comment $comment)
     {
-        if (
-            $comment->user_id !== $request->user()->id &&
-            $request->user()->role !== 'admin'
-        ) {
+        if ($comment->user_id !== $request->user()->id && $request->user()->role !== 'admin') {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda tidak memiliki akses',
@@ -81,6 +75,6 @@ class CommentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Tanggapan berhasil dihapus',
-        ]);
+        ], 200);
     }
 }
