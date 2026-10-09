@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CommentController;
-use Illuminate\Image\Transformations\Rotate;
+use App\Http\Controllers\Api\ReportController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -18,6 +18,9 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::apiResource('reports', ReportController::class);
+
     Route::get('/reports/{report}/comments', [CommentController::class, 'index']);
     Route::post('/reports/{report}/comments', [CommentController::class, 'store']);
 
