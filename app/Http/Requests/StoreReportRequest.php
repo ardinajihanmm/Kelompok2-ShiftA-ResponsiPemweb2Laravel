@@ -18,7 +18,7 @@ class StoreReportRequest extends FormRequest
             'facility_id' => ['required', 'exists:facilities,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'priority' => ['required', 'in:low,medium,high'],
+            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
 }
