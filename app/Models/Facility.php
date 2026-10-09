@@ -19,10 +19,7 @@ class Facility extends Model
     {
         return $this->belongsTo(Category::class);
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> 1717ffa512633c16920fb88b20f0261f3cbe0646
     public function reports(): HasMany
     {
         return $this->hasMany(Report::class);
