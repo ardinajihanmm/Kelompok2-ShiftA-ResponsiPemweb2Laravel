@@ -264,6 +264,7 @@
         </p>
     </footer>
 
+@yield('scripts')
 </body>
 
 </html>
