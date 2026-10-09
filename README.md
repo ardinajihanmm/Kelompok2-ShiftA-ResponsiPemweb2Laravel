@@ -16,7 +16,7 @@ FasTrack adalah aplikasi web untuk membantu mahasiswa melaporkan kerusakan fasil
 
 | No. | Nama Lengkap | NIM | Shift Awal | Shift Akhir | Jobdesk / Kontribusi | Link Video Penjelasan |
 |---:|---|---|---|---|---|---|
-| 1 | Muhammad Zaki Dzulfikar | H1D023065 | Shift A | Shift B | CRUD fitur reservasi & autentikasi — sesuaikan dengan kontribusi pada FasTrack | [YouTube/Drive](https://...) |
+| 1 | Ardina Jihan Mariska | H1H024018| Shift B | Shift A | 1. CRUD Pengguna, Mengelola role admin dan mahasiswa sesuai implementasi. Integrasi tampilan autentikasi dengan backend Laravel. Halaman awal website. Halaman login dan register. Autentikasi dan hak akses. Proses login, register, dan logout. Integrasi autentikasi API dan Sanctum Pembatasan akses halaman berdasarkan role.| [YouTube/Drive](https://youtu.be/ecjdt3Msosg) |
 | 2 | [Nama Lengkap] | [NIM] | [Shift Awal] | [Shift Akhir] | [Jobdesk / kontribusi] | [YouTube/Drive](https://...) |
 | 3 | [Nama Lengkap] | [NIM] | [Shift Awal] | [Shift Akhir] | [Jobdesk / kontribusi] | [YouTube/Drive](https://...) |
 | 4 | [Nama Lengkap] | [NIM] | [Shift Awal] | [Shift Akhir] | [Jobdesk / kontribusi] | [YouTube/Drive](https://...) |
